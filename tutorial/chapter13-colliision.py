@@ -38,7 +38,9 @@ all_sprites.add(rect2)
 
 rect_group = pygame.sprite.Group()
 rect_group.add(rect2)
-
+all_sprites.update();
+pygame.display.flip();
+pygame.time.wait(8000)
 running = True
 while running:
     for event in pygame.event.get():
