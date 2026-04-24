@@ -1,6 +1,7 @@
 import pygame
 from banner import Banner
 from shape_transformations import Point,ShapeTransforms
+from start_button import StartButton
 
 #
  
@@ -27,15 +28,25 @@ def main():
     banner = Banner(screen_midpoint)
     banner.draw(screen, "Space Race", RED, WHITE)
 
-    
+    startButton = StartButton(screen_midpoint)
+    startButton.draw(screen, "Start", BLUE, WHITE) 
 
     clock = pygame.time.Clock()
     done = False
     while not done:
+        mouse_x=mouse_y = None
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 done = True
-    
+            elif  event.type == pygame.MOUSEBUTTONUP:
+                pos = pygame.mouse.get_pos()
+                mouse_x = pos[0]
+                mouse_y = pos[1]
+                
+        if startButton.isClicked(mouse_x,mouse_y):
+            screen.fill(BLACK)
+            startButton.visible=False 
+
         clock.tick(60) 
         pygame.display.flip()
     
