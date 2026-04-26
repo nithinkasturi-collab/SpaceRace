@@ -2,6 +2,7 @@ import pygame
 from banner import Banner
 from shape_transformations import Point,ShapeTransforms
 from start_button import StartButton
+from gamesprite import GameSprite
 
 #
  
@@ -30,6 +31,7 @@ def main():
 
     startButton = StartButton(screen_midpoint)
     startButton.draw(screen, "Start", BLUE, WHITE) 
+    player = GameSprite()
 
     clock = pygame.time.Clock()
     done = False
@@ -44,14 +46,21 @@ def main():
                 mouse_y = pos[1]
                 
         if startButton.isClicked(mouse_x,mouse_y):
-            screen.fill(BLACK)
+            background_image = pygame.image.load("Game//spacebackdrop.jpg").convert()
+            screen.blit(background_image, [0, 0])
+            player.draw(screen,screen_midpoint.x-player.width//2,screen_midpoint.y+100)
             startButton.visible=False 
 
+
+        
+        
+        
+        
         clock.tick(60) 
         pygame.display.flip()
     
     pygame.quit()
- 
+
 if __name__ == "__main__":
     main()
  
