@@ -1,64 +1,62 @@
 import pygame
-from gamesprite import GameSprite
 import random
+from gamesprite import GameSprite
 
 class Level:
-    def __init__(self):
-        self.meteors = []
-
-        spriteSheet = pygame.image.load("Game/bigbrownmeteorspritesheet.png").convert_alpha()
+    def __init__(self, screen_width, screen_height):
+        self.screen_width = screen_width
+        self.screen_height = screen_height
         
-        # make meteors sprites
-        level = []
+        try:
+            spriteSheet = pygame.image.load("Game/bigbrownmeteorspritesheet.png").convert_alpha()
+        except:
+            spriteSheet = pygame.Surface((410, 160))
+            spriteSheet.fill((100, 100, 100))
 
-        start_x = 0
-        start_y = 0
-        end_x   = 819
-        end_y   = 259
+        self.meteors = []
         s_w = 205
         s_h = 80
-        for row in range(100):
-            for col in range(100):
-                x = start_x + s_w * ((col+1) % 2) 
-                y = start_y + s_h * ((row+1) % 2)
-                meteor = GameSprite(spriteSheet,s_w,s_h,(x,y,s_w,s_h))
-                self.meteors.append(meteor)
-                level.append([0+(col*row+col)*random.randint(200,400),500])
 
- 
-        # Go through the array above and add platforms
-        self.meteorfeild_list = pygame.sprite.Group()
-        for platform in level:
-            meteor = self.meteors[random.randint(0,len(self.meteors)-1)]
-            meteor.rect.x = platform[0]
-            meteor.rect.y = platform[1]
-            #plant.player = self.player
-            self.meteorfeild_list.add(meteor)
+        for row in range(2):
+            for col in range(2):
+                rect = pygame.Rect(col * s_w, row * s_h, s_w, s_h)
+                image = pygame.Surface((s_w, s_h), pygame.SRCALPHA)
+                image.blit(spriteSheet, (0, 0), rect)
+                self.meteors.append(image)
 
-        # How far this world has been scrolled left/right
-        self.world_shift = 0
+        self.meteorfield_list = pygame.sprite.Group()
 
-    # Update everythign on this level
-    def update(self):
-        """ Update everything in this level."""
-        self.meteorfeild_list.update()
-        #self.enemy_list.update()
- 
+        # 2. Generate meteors with spacing logic
+        for i in range(15): 
+            image = random.choice(self.meteors)
+            new_meteor = GameSprite(image, s_w, s_h)
+
+            # make the meteors like a field of meteors            
+            new_meteor.rect.x = random.randint(0, (self.screen_width - s_w) // 10) * 10
+            
+            # Spread them far apart vertically
+            # This makes ure they don't appear on top of each other
+            new_meteor.rect.y = random.randint(-5000, -100)
+            
+            self.meteorfield_list.add(new_meteor)
+
+    def shift_world(self, shift_x, shift_y):
+        """
+        Scrolls all meteors. 
+        Positive shift_y moves them down (flying forward).
+        Positive shift_x moves them right (player moving left).
+        """
+        for meteor in self.meteorfield_list:
+            meteor.rect.y += shift_y
+            meteor.rect.x += shift_x # Add horizontal movement
+
+            if meteor.rect.top > self.screen_height:
+                meteor.rect.y = random.randint(-1000, -100)
+                meteor.rect.x = random.randint(0, self.screen_width - meteor.rect.width)
+            
+            elif meteor.rect.bottom < -1000:
+                meteor.rect.y = self.screen_height
+
+
     def draw(self, screen):
-        # Draw everything on this level.
-        self.meteorfeild_list.draw(screen)
-        #self.enemy_list.draw(screen)
- 
-    def shift_world(self, shift_x):
-        """ When the user moves left/right and we need to scroll
-        everything: """
- 
-        # Keep track of the shift amount
-        self.world_shift += shift_x
- 
-        # Go through all the sprite lists and shift
-        for floorItems in self.meteorfeild_list:
-            floorItems.rect.x += shift_x
- 
-        #for enemy in self.enemy_list:
-            #enemy.rect.x += shift_x
+        self.meteorfield_list.draw(screen)

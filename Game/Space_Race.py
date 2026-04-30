@@ -34,7 +34,7 @@ def main():
     startButton.draw(screen, "Start", BLUE, WHITE) 
     player = GameSprite("Game/spaceship.png",80,80)
 
-    level = Level()
+    level = Level(SCREEN_WIDTH,SCREEN_HEIGHT)
 
     clock = pygame.time.Clock()
     done = False
@@ -47,12 +47,14 @@ def main():
                 pos = pygame.mouse.get_pos()
                 mouse_x = pos[0]
                 mouse_y = pos[1]
+ 
+        level.shift_world(0, 5)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
-            level.shift_world(5)
+            level.shift_world(5, 0)
         if keys[pygame.K_RIGHT]:
-            level.shift_world(-5)
+            level.shift_world(-5, 0)
                 
         if not startButton.visible:
             screen.blit(background_image, [0, 0])
