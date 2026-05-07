@@ -135,16 +135,6 @@ def main():
             text_surface = font.render(timeText, True,GREEN)
             f_w, f_h = font.size(timeText)
             screen.blit(text_surface, (10,SCREEN_HEIGHT-(f_h+5)))
-
-            # #debug collision circles
-            # #Draw player collision circle
-            # pygame.draw.circle(screen, (255, 0, 0), player.rect.center, player.radius, 2)
-
-            # # Draw meteor collision circles
-            # for meteor in level.meteorfield_list:
-            #     pygame.draw.circle(screen, (255, 0, 0), meteor.rect.center, meteor.radius, 2)
-
-
  
         if startButton.isClicked(mouse_x,mouse_y):
             background_image = pygame.image.load("Game//spacebackdrop.jpg").convert()
@@ -156,7 +146,6 @@ def main():
         clock.tick(60) 
         pygame.display.flip()
     
-    wait_for_key()
     pygame.quit()
 
 if __name__ == "__main__":
